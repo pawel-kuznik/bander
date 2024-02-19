@@ -32,4 +32,33 @@ describe('PackadData', () => {
         const validated:string = packed.accessProperty('name', validateString);
         expect(validated).toEqual('johnny');
     });
+
+    it('should allow unpacking a property', () => {
+
+        const input = { actor: { name: 'johnny' } };
+        const packed = new PackedData(input);
+
+        const unpacker = (input: any) : string => {
+            return input.name;
+        };
+
+        const unpacked = packed.unpackProperty("actor", unpacker);
+        expect(unpacked).toEqual("johnny");
+    });
+
+    it('should allow unpacking a whole array', () => {
+
+        const input = { actors: [ { name: "John" }, { name: "Bob" } ]};
+        const packed = new PackedData(input);
+
+        const unpacker = (input: any) : string => {
+            return input.name;
+        };
+
+        const unpacked = packed.unpackArray("actors", unpacker);
+
+        expect(unpacked.length).toEqual(2);
+        expect(unpacked.find(u => u === "John")).toBeTruthy();
+        expect(unpacked.find(u => u === "Bob")).toBeTruthy();
+    });
 });

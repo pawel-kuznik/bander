@@ -23,4 +23,20 @@ export class PackedData {
 
         return this._data[prop];
     }
+
+    /**
+     *  Unpack a property with a specific unpacker function.
+     */
+    unpackProperty<TPropType = any>(prop: string, unpacker: (input: any) => TPropType) : TPropType {
+
+        return unpacker(this.accessProperty(prop));
+    }
+
+    /**
+     *  Unpack an array under a specific property.
+     */
+    unpackArray<TPropType = any>(prop: string, unpacker: (input: any) => TPropType) : TPropType[] {
+
+        return this.accessProperty(prop).map((v: any) => unpacker(v));
+    }
  };
