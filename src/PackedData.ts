@@ -39,4 +39,33 @@ export class PackedData {
 
         return this.accessProperty(prop).map((v: any) => unpacker(v));
     }
+
+    /**
+     *  Parse a value under a specific property as an array.
+     */
+    parseArray<TPropType = any>(prop: string, parser?: (input: any) => TPropType) : TPropType[] {
+
+        const rawValue = this.accessProperty(prop);
+
+        // just fallback on an empty array as we couldn't parse the property
+        // as an array.
+        if (!Array.isArray(rawValue)) return [];
+
+        if (parser) return rawValue.map((v: any) => parser(v));
+
+        return rawValue;
+    }
+
+    /**
+     *  Parse a property in the data. This method allows for a fallback value if the property doesn't
+     *  exists in the original data.
+     */
+    parseProperty<TPropType = any>(prop: string, fallback?: TPropType, parser?: (input: any) => TPropType) : TPropType {
+
+        if (!(prop in this._data) && fallback !== undefined) return fallback;
+
+        if (parser) return parser(this._data[prop]);
+
+        return this._data[prop];
+    }
  };

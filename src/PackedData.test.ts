@@ -61,4 +61,31 @@ describe('PackadData', () => {
         expect(unpacked.find(u => u === "John")).toBeTruthy();
         expect(unpacked.find(u => u === "Bob")).toBeTruthy();
     });
+
+    it('should allow for parsing a property with a fallback', () => {
+
+        const input = { foo: "baz" };
+        const packed = new PackedData(input);
+
+        const value = packed.parseProperty("missing", 50);
+        expect(value).toEqual(50);
+
+        const value2 = packed.parseProperty("foo", 50);
+        expect(value2).toEqual("baz");
+    });
+
+    it("should allow for parsing an array", () => {
+
+        const input = { foo: [ "baz" ] };
+        const packed = new PackedData(input);
+
+        const value = packed.parseArray("missing");
+        expect(Array.isArray(value)).toEqual(true);
+
+        const value2 = packed.parseArray("foo");
+        expect(value2).toContain("baz");
+
+        const value3 = packed.parseArray("foo", (s) => `${s}+2`);
+        expect(value3).toContain("baz+2");
+    });
 });
